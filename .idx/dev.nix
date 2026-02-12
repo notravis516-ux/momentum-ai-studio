@@ -56,4 +56,4 @@
     };
   };
 }
-.firebasercRun firebase init in your repository folder (if it's not already initialized).
+.firebasercRun firebase init in your repository folder (if it's not already initialized).firebase deploy
