@@ -1,4 +1,8 @@
-# To learn more about how to use Nix to configure your environment
+{
+  "projects": {
+    "default": "studio-4951946114-736e6"
+  }
+}# To learn more about how to use Nix to configure your environment
 # see: https://developers.google.com/idx/guides/customize-idx-env
 { pkgs, ... }: {
   # Which nixpkgs channel to use.
@@ -52,3 +56,4 @@
     };
   };
 }
+.firebasercRun firebase init in your repository folder (if it's not already initialized).
