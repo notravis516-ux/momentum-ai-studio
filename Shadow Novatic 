@@ -64,4 +64,36 @@ module.exports = {
 http://localhost:3000CORE_SECRET_KEY=SN_7f8e9d2a1b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c
 CORE_BRIDGE_URL=http://localhost:3002
 FRONTEND_URL=http://localhost:3000
-http://localhost:3002
+http://localhost:3002https://your-project.vercel.appKey Value
+NEXT_PUBLIC_API_URL https://your-render-service.onrender.com
+NEXT_PUBLIC_CORE_KEY SN_7f8e9d2a1b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1cKey Value
+CORE_SECRET_KEY SN_7f8e9d2a1b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c
+CORE_BRIDGE_URL https://your-ngrok-id.ngrok-free.app
+FRONTEND_URL https://your-project.vercel.apphttps://your-ngrok-id.ngrok-free.apphttp://localhost:3002/relay// core/test-connection.js
+const fetch = require('node-fetch');
+require('dotenv').config();
+
+async function verifyCircuit() {
+    console.log("--- STARTING SHADOW NOVATIC CIRCUIT TEST ---");
+    
+    try {
+        const response = await fetch('http://localhost:3002/relay', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-core-secret': process.env.CORE_SECRET_KEY 
+            },
+            body: JSON.stringify({ action: 'PING', payload: 'Testing local bridge' })
+        });
+        
+        if (response.status === 200) {
+            console.log("✅ LOCAL HANDSHAKE SUCCESSFUL: Bridge is listening.");
+        } else {
+            console.log("❌ LOCAL HANDSHAKE FAILED: Check your CORE_SECRET_KEY.");
+        }
+    } catch (err) {
+        console.log("❌ CONNECTION ERROR: Is the bridge running on port 3002?");
+    }
+}
+
+verifyCircuit();
