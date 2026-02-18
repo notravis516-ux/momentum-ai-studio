@@ -97,3 +97,9 @@ async function verifyCircuit() {
 }
 
 verifyCircuit();
+bridge.js#!/bin/bash
+# Start the bridge in the background
+node bridge.js & 
+
+# Start the tunnel
+npx ngrok http 3002
