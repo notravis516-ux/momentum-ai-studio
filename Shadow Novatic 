@@ -103,3 +103,67 @@ node bridge.js &
 
 # Start the tunnel
 npx ngrok http 3002
+import { useState, useEffect } from 'react';
+
+export default function SystemStatus() {
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [status, setStatus] = useState({ backend: 'checking', core: 'checking' });
+
+  const unlock = () => {
+    const pass = prompt("Enter Admin Key:");
+    if (pass === process.env.NEXT_PUBLIC_CORE_KEY) {
+      setIsAuthorized(true);
+    } else {
+      alert("Unauthorized Access.");
+    }
+  };
+
+  useEffect(() => {
+    if (!isAuthorized) return;
+
+    async function checkHealth() {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/health`);
+        const data = await res.json();
+        setStatus({
+          backend: 'online',
+          core: data.coreLinked ? 'online' : 'offline'
+        });
+      } catch {
+        setStatus({ backend: 'offline', core: 'offline' });
+      }
+    }
+    checkHealth();
+    const interval = setInterval(checkHealth, 10000);
+    return () => clearInterval(interval);
+  }, [isAuthorized]);
+
+  if (!isAuthorized) {
+    return (
+      <button onClick={unlock} className="p-2 bg-gray-900 text-xs text-gray-500 rounded border border-gray-800">
+        VIEW SYSTEM DIAGNOSTICS
+      </button>
+    );
+  }
+
+  return (
+    <div className="p-4 border rounded-lg bg-black text-white font-mono">
+      <h3 className="text-xs font-bold mb-3 tracking-widest text-blue-500">SHADOW NOVATIC CONTROL PANEL</h3>
+      <div className="space-y-2">
+        <StatusRow label="Cloud Relay" status={status.backend} />
+        <StatusRow label="Local Core" status={status.core} />
+      </div>
+      <button onClick={() => setIsAuthorized(false)} className="mt-4 text-[10px] text-gray-600 underline">LOCK SESSION</button>
+    </div>
+  );
+}
+
+function StatusRow({ label, status }) {
+  const colors = { online: 'text-green-400', offline: 'text-red-500', checking: 'text-yellow-500' };
+  return (
+    <div className="flex justify-between text-xs border-b border-gray-900 pb-1">
+      <span className="text-gray-400">{label}:</span>
+      <span className={colors[status]}>{status.toUpperCase()}</span>
+    </div>
+  );
+}
